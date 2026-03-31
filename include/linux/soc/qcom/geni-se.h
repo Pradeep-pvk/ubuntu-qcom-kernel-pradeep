@@ -65,6 +65,7 @@ struct geni_icc_path {
  * @clk_perf_tbl:	Table of clock frequency input to serial engine clock
  * @icc_paths:		Array of ICC paths for SE
  * @has_opp:		Indicates if OPP is supported
+ * @multi_owner:	True if SE is shared between multiprocessors.
  */
 struct geni_se {
 	void __iomem *base;
@@ -76,6 +77,7 @@ struct geni_se {
 	unsigned long *clk_perf_tbl;
 	struct geni_icc_path icc_paths[3];
 	bool has_opp;
+	bool multi_owner;
 };
 
 /* Common SE registers */
