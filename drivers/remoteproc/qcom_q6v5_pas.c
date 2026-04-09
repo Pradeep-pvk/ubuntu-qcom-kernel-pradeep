@@ -579,6 +579,13 @@ static int qcom_pas_attach(struct rproc *rproc)
 		goto unroll_attach;
 	}
 
+	ret = qcom_q6v5_ping_subsystem(&pas->q6v5);
+	if (ret) {
+		dev_err(pas->dev, "Failed to ping subsystem, assuming device crashed\n");
+		rproc_report_crash(rproc, RPROC_FATAL_ERROR);
+		goto disable_running;
+	}
+
 	return 0;
 
 unroll_attach:
@@ -961,8 +968,13 @@ static int qcom_pas_probe(struct platform_device *pdev)
 	pas->pas_ctx->use_tzmem = rproc->has_iommu;
 	pas->dtb_pas_ctx->use_tzmem = rproc->has_iommu;
 
-	if (desc->early_boot)
-		pas->rproc->state = RPROC_DETACHED;
+	if (desc->early_boot) {
+		ret = qcom_q6v5_ping_subsystem_init(&pas->q6v5, pdev);
+		if (ret)
+			dev_warn(&pdev->dev, "Falling back to firmware load\n");
+		else
+			pas->rproc->state = RPROC_DETACHED;
+	}
 
 	ret = rproc_add(rproc);
 	if (ret)
