@@ -2043,7 +2043,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
 	if (!ret) {
 		ret = qcom_pcie_set_max_opp(dev);
 		if (ret) {
-			dev_err_probe(dev, ret, "Failed to set max OPP\n");
+			dev_err_probe(dev, ret, "Failed to set max OPP in probe\n");
 			goto err_pm_runtime_put;
 		}
 
@@ -2152,6 +2152,14 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
 			}
 		}
 
+		if (pcie->use_pm_opp) {
+			ret = qcom_pcie_set_max_opp(dev);
+			if (ret) {
+				dev_err(dev, "Failed to set max OPP in resume: %d\n", ret);
+				return ret;
+			}
+		}
+
 		/*
 		 * Only disable CPU-PCIe interconnect path if the suspend is non-S2RAM.
 		 * Because on some platforms, DBI access can happen very late during the
@@ -2205,6 +2213,14 @@ static int qcom_pcie_resume_noirq(struct device *dev)
 			return ret;
 	} else {
 		if (pm_suspend_target_state != PM_SUSPEND_MEM) {
+			if (pcie->use_pm_opp) {
+				ret = qcom_pcie_set_max_opp(dev);
+				if (ret) {
+					dev_err(dev, "Failed to set max OPP in resume: %d\n", ret);
+					return ret;
+				}
+			}
+
 			ret = icc_enable(pcie->icc_cpu);
 			if (ret) {
 				dev_err(dev, "Failed to enable CPU-PCIe interconnect path: %d\n",
