@@ -159,9 +159,6 @@ do_flavour_header_package=true
 # DTBs
 do_dtbs=false
 
-# FIT image (bundle of DTBs) generation
-do_fitimage=false
-
 # Stamp every built DTB with a build version, readable on the running
 # system from /proc/device-tree/<dtb_version_prop>.
 do_dtbs_version=false

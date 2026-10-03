@@ -67,7 +67,6 @@ printenv:
 	@echo "do_linux_main_modules_depends = $(do_linux_main_modules_depends)"
 	@echo "do_dtbs                   = $(do_dtbs)"
 	@echo "do_dtbs_version           = $(do_dtbs_version)"
-	@echo "do_fitimage               = $(do_fitimage)"
 	@echo "dtb_version               = $(dtb_version)"
 	@echo "do_source_package         = $(do_source_package)"
 	@echo "do_source_package_content = $(do_source_package_content)"
