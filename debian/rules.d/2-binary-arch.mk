@@ -181,8 +181,8 @@ endif
 ifeq ($(do_dtbs_version),true)
 	# Stamp every built device tree with the build version, so the running
 	# system can report which build its device tree came from. This runs
-	# before dtbs_install and the FIT image generation so that both carry
-	# the stamp. Overlays are stamped too; an overlay's own root properties
+	# before dtbs_install so that the installed device trees carry the
+	# stamp. Overlays are stamped too; an overlay's own root properties
 	# are ignored when it is applied, so this is harmless.
 	set -e; \
 	for dtb in $$(find $(build_dir)/arch/$(build_arch)/boot/dts \
@@ -199,21 +199,6 @@ ifeq ($(do_dtbs),true)
 	# #12355 and PR #12429.  Restore $(conc_level) once that fix ships.
 	$(kmake) O=$(build_dir) -j1 dtbs_install \
 		INSTALL_DTBS_PATH=$(pkgdir)/usr/lib/firmware/$(abi_release)-$*/device-tree
-endif
-
-ifeq ($(do_fitimage),true)
-	# Generate a FIT image bundling the Qualcomm DTBs. The .its resolves its
-	# /incbin/ paths relative to its own location, so it is placed in the
-	# kernel build directory where the DTBs were built. It also pulls in a
-	# metadata DTB compiled from a DTS shipped in the packaging.
-	$(build_dir)/scripts/dtc/dtc -I dts -O dtb -q \
-		-o $(build_dir)/qcom-metadata.dtb \
-		$(CURDIR)/$(DEBIAN)/fitimage/qcom-metadata.dts
-	cp $(CURDIR)/$(DEBIAN)/fitimage/qcom-next-fitimage.its \
-		$(build_dir)/qcom-next-fitimage.its
-	install -d $(pkgdir)/usr/lib/firmware/$(abi_release)-$*/device-tree/qcom
-	mkimage -f $(build_dir)/qcom-next-fitimage.its \
-		$(pkgdir)/usr/lib/firmware/$(abi_release)-$*/device-tree/qcom/qcom.itb
 endif
 
 ifeq ($(no_dumpfile),)
