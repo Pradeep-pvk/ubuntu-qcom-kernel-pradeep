@@ -18,4 +18,6 @@ do_tools_bpftool = true
 
 do_dtbs		= true
 do_dtbs_version	= true
+do_dtbs_provenance = true
+dtb_provenance_vendor = qcom
 do_dkms_kgsl     = true
