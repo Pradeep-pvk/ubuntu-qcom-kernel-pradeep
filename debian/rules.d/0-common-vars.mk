@@ -165,6 +165,22 @@ do_dtbs_version=false
 dtb_version_prop=ubuntu,dtb-version
 dtb_version := $(DEB_SOURCE) $(DEB_VERSION)
 
+# Record a SHA-256 over the device trees this kernel ships, in
+# /usr/lib/modules/<abi>-<flavour>/dtb-provenance-sha256.
+#
+# UEFI capsule updates deliver device trees out of band, so the DTB the
+# firmware is running is not necessarily the one belonging to the booted
+# kernel.  This marker is what lets the running system tell the difference:
+# the capsule build stamps the same value into the device trees it ships, and
+# the on-device check compares that stamp against this file.  Scanning it
+# across every installed kernel is also what identifies which kernel a
+# mismatched DTB does belong to.
+#
+# Only the vendor subdirectory named here is hashed, matching the set the
+# capsule is built from.
+do_dtbs_provenance=false
+dtb_provenance_vendor=
+
 # ZSTD compressed kernel modules
 do_zstd_ko=true
 ifeq ($(DEB_DISTRIBUTION),jammy)

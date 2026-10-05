@@ -201,6 +201,38 @@ ifeq ($(do_dtbs),true)
 		INSTALL_DTBS_PATH=$(pkgdir)/usr/lib/firmware/$(abi_release)-$*/device-tree
 endif
 
+ifeq ($(do_dtbs_provenance),true)
+	# Must run after dtbs_install, so the hash covers the device trees
+	# exactly as shipped -- including the $(dtb_version_prop) stamp applied
+	# above.  The capsule build recomputes this from the installed
+	# linux-modules and refuses to build if the two disagree.
+	#
+	# LC_ALL=C throughout: en_US.UTF-8 collation ignores the '-' separator
+	# and orders these filenames differently, which would otherwise make the
+	# value depend on the builder's locale rather than on the device trees.
+	set -e; \
+	dtbdir=$(pkgdir)/usr/lib/firmware/$(abi_release)-$*/device-tree/$(dtb_provenance_vendor); \
+	if [ ! -d "$$dtbdir" ]; then \
+		echo "EE: $$dtbdir not found, cannot record DTB provenance" >&2; \
+		exit 1; \
+	fi; \
+	manifest=$$(mktemp); \
+	( cd "$$dtbdir" && LC_ALL=C sha256sum -- *.dtb *.dtbo 2>/dev/null \
+		| LC_ALL=C sort -k2,2 ) > "$$manifest"; \
+	if [ ! -s "$$manifest" ]; then \
+		echo "EE: no device trees found in $$dtbdir" >&2; \
+		rm -f "$$manifest"; \
+		exit 1; \
+	fi; \
+	install -d $(pkgdir)/usr/lib/modules/$(abi_release)-$*; \
+	sha256sum "$$manifest" | cut -d' ' -f1 \
+		> $(pkgdir)/usr/lib/modules/$(abi_release)-$*/dtb-provenance-sha256; \
+	chmod 644 $(pkgdir)/usr/lib/modules/$(abi_release)-$*/dtb-provenance-sha256; \
+	echo "I: DTB provenance $$(cat $(pkgdir)/usr/lib/modules/$(abi_release)-$*/dtb-provenance-sha256)" \
+		"over $$(wc -l < "$$manifest") device trees in $(dtb_provenance_vendor)/"; \
+	rm -f "$$manifest"
+endif
+
 ifeq ($(no_dumpfile),)
 	makedumpfile -g $(pkgdir)/boot/vmcoreinfo-$(abi_release)-$* \
 		-x $(build_dir)/vmlinux
