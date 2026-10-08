@@ -417,6 +417,26 @@ endif
 
 	$(if $(filter true,$(do_dkms_kgsl)),$(call build_dkms, $(mods_pkg_name)-$*, $(pkgdir)/lib/modules/$(abi_release)-$*/kernel, "", kgsl, kgsl-dkms))
 
+ifeq ($(do_dkms_kgsl),true)
+	# The in-tree msm_kgsl replaces the kgsl-dkms package (see the
+	# Provides/Conflicts on linux-modules in control.d/flavour-control.stub),
+	# so we must also ship the runtime glue that kgsl-dkms used to provide.
+	# Without the modprobe.d snippet the DRM msm driver binds the GPU before
+	# KGSL can claim it; without the udev rule /dev/kgsl-3d0 is not accessible
+	# to the video group and the Adreno userspace stack fails to open it.
+	#
+	# The filenames are namespaced per ABI and flavour so that several kernels
+	# can be installed at once without dpkg file conflicts. The directives are
+	# idempotent: modprobe tolerates the repeated "options"/"softdep" lines and
+	# udev simply applies the identical rule more than once.
+	install -d $(pkgdir)/usr/lib/modprobe.d
+	install -m644 debian/kgsl.modprobe.conf \
+		$(pkgdir)/usr/lib/modprobe.d/kgsl-$(abi_release)-$*.conf
+	install -d $(pkgdir)/usr/lib/udev/rules.d
+	install -m644 debian/kgsl.udev.rules \
+		$(pkgdir)/usr/lib/udev/rules.d/60-kgsl-$(abi_release)-$*.rules
+endif
+
 ifeq ($(do_dbgsym_package),true)
 	# Add .gnu_debuglink sections to each stripped .ko
 	# pointing to unstripped verson
