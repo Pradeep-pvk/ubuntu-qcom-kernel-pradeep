@@ -47,6 +47,7 @@ do_cloud_tools=$(sort $(filter-out false,$(do_tools_hyperv)))
 do_tools_perf_jvmti?=false
 do_tools_perf_python?=false
 do_dkms_kgsl?=false
+do_dkms_camx?=true
 
 # Indep tools packages may only be built for the main linux source package
 ifeq ($(DEB_SOURCE),linux)
