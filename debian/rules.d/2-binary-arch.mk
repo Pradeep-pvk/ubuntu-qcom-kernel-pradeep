@@ -417,6 +417,8 @@ endif
 
 	$(if $(filter true,$(do_dkms_kgsl)),$(call build_dkms, $(mods_pkg_name)-$*, $(pkgdir)/lib/modules/$(abi_release)-$*/kernel, "", kgsl, kgsl-dkms))
 
+	$(if $(filter true,$(do_dkms_camx)),$(call build_dkms, $(mods_pkg_name)-$*, $(pkgdir)/lib/modules/$(abi_release)-$*/kernel, "", camx, camx-dkms))
+
 ifeq ($(do_dkms_kgsl),true)
 	# The in-tree msm_kgsl replaces the kgsl-dkms package (see the
 	# Provides/Conflicts on linux-modules in control.d/flavour-control.stub),
