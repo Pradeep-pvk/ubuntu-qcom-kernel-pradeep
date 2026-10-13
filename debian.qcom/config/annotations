@@ -2063,7 +2063,7 @@ CONFIG_SENSORS_AMC6821                          policy<{'arm64': 'y'}>
 CONFIG_SENSORS_EMC2305                          policy<{'arm64': 'y'}>
 CONFIG_SENSORS_MACSMC_HWMON                     policy<{'arm64': '-'}>
 CONFIG_SENSORS_QCOM_BCL                         policy<{'arm64': '-'}>
-CONFIG_SENSORS_QCOM_SPMI_BCL                    policy<{'arm64': 'n'}>
+CONFIG_SENSORS_QCOM_SPMI_BCL                    policy<{'arm64': 'y'}>
 CONFIG_SENSORS_SA67MCU                          policy<{'arm64': '-'}>
 CONFIG_SENSORS_SG2042_MCU                       policy<{'arm64': '-'}>
 CONFIG_SENSORS_SL28CPLD                         policy<{'arm64': '-'}>
