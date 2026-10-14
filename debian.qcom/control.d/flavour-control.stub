@@ -28,9 +28,9 @@ Architecture: ARCH
 Section: kernel
 Priority: optional
 Depends: ${misc:Depends}, ${shlibs:Depends}, =DEPENDS=wireless-regdb
-Provides: kgsl-dkms
-Conflicts: kgsl-dkms (<< 999:0)
-Replaces: kgsl-dkms (<< 999:0)
+Provides: kgsl-dkms, camx-dkms
+Conflicts: kgsl-dkms (<< 999:0), camx-dkms (<< 999:0)
+Replaces: kgsl-dkms (<< 999:0), camx-dkms (<< 999:0)
 Built-Using: ${linux:BuiltUsing}
 Description: Linux kernel modules for version PKGVER
  Contains the corresponding System.map file, the modules built by the
