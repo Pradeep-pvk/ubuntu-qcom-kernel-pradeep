@@ -655,7 +655,7 @@ struct drm_dsc_config *dpu_encoder_get_dsc_config(struct drm_encoder *drm_enc)
 
 void dpu_encoder_update_topology(struct drm_encoder *drm_enc,
 				 struct msm_display_topology *topology,
-				 struct drm_atomic_state *state,
+				 struct drm_atomic_commit *state,
 				 const struct drm_display_mode *adj_mode)
 {
 	struct dpu_encoder_virt *dpu_enc = to_dpu_encoder_virt(drm_enc);
@@ -715,7 +715,7 @@ void dpu_encoder_update_topology(struct drm_encoder *drm_enc,
 	}
 }
 
-bool dpu_encoder_needs_modeset(struct drm_encoder *drm_enc, struct drm_atomic_state *state)
+bool dpu_encoder_needs_modeset(struct drm_encoder *drm_enc, struct drm_atomic_commit *state)
 {
 	struct drm_connector *connector;
 	struct drm_connector_state *conn_state;
@@ -1334,7 +1334,7 @@ out:
 }
 
 static void dpu_encoder_virt_atomic_enable(struct drm_encoder *drm_enc,
-					struct drm_atomic_state *state)
+					struct drm_atomic_commit *state)
 {
 	struct dpu_encoder_virt *dpu_enc = NULL;
 	int ret = 0;
@@ -1381,7 +1381,7 @@ out:
 }
 
 static void dpu_encoder_virt_atomic_disable(struct drm_encoder *drm_enc,
-					struct drm_atomic_state *state)
+					struct drm_atomic_commit *state)
 {
 	struct dpu_encoder_virt *dpu_enc = NULL;
 	struct drm_crtc *crtc;

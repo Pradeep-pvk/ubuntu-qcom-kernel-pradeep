@@ -1643,7 +1643,7 @@ static int dw_dp_link_enable(struct dw_dp *dp)
 }
 
 static void dw_dp_bridge_atomic_enable(struct drm_bridge *bridge,
-				       struct drm_atomic_state *state)
+				       struct drm_atomic_commit *state)
 {
 	struct dw_dp *dp = bridge_to_dp(bridge);
 	struct drm_connector *connector;
@@ -1696,7 +1696,7 @@ static void dw_dp_reset(struct dw_dp *dp)
 }
 
 static void dw_dp_bridge_atomic_disable(struct drm_bridge *bridge,
-					struct drm_atomic_state *state)
+					struct drm_atomic_commit *state)
 {
 	struct dw_dp *dp = bridge_to_dp(bridge);
 
