@@ -432,8 +432,6 @@ ifeq ($(do_dkms_kgsl),true)
 	# idempotent: modprobe tolerates the repeated "options"/"softdep" lines and
 	# udev simply applies the identical rule more than once.
 	install -d $(pkgdir)/usr/lib/modprobe.d
-	install -m644 debian/kgsl.modprobe.conf \
-		$(pkgdir)/usr/lib/modprobe.d/kgsl-$(abi_release)-$*.conf
 	install -d $(pkgdir)/usr/lib/udev/rules.d
 	install -m644 debian/kgsl.udev.rules \
 		$(pkgdir)/usr/lib/udev/rules.d/60-kgsl-$(abi_release)-$*.rules
